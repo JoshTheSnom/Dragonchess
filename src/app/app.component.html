@@ -1,22 +1,10 @@
 Dragonchess
 <body>
-  <div class="contentPane">
+  <div class="contentPane" *ngFor="let board of boards; let bn = index">
     <!--div id="chess_board1"-->
-    <table cellpadding="0" cellspacing="0" *ngFor="let b1 of board1; let i = index">
-      <tr *ngFor="let cell of b1; let j = index">
-        <td [ngStyle]="{background : cell.color, color:cell.pieceColor}" (click)="onClick(i,j,1)" [ngClass]="(cell.piece == '' && !cell.canGo) || (whosTurn!=cell.pieceColor && cell.piece != '') ? 'unclickable': 'clickable'">{{cell.piece}}</td>
-      </tr>
-    </table>
-    <!--/div-->
-    <!--div id="chess_board2"-->
-    <table cellpadding="0" cellspacing="0" *ngFor="let b2 of board2; let i = index">
-      <tr *ngFor="let cell of b2; let j = index">
-        <td [ngStyle]="{background : cell.color, color:cell.pieceColor}" (click)="onClick(i,j,2)" [ngClass]="(cell.piece == '' && !cell.canGo) || (whosTurn!=cell.pieceColor && cell.piece != '') ? 'unclickable': 'clickable'">{{cell.piece}}</td>
-      </tr>
-    </table>
-    <table cellpadding="0" cellspacing="0" *ngFor="let b3 of board3; let i = index">
-      <tr *ngFor="let cell of b3; let j = index">
-        <td [ngStyle]="{background : cell.color, color:cell.pieceColor}" (click)="onClick(i,j,3)" [ngClass]="(cell.piece == '' && !cell.canGo) || (whosTurn!=cell.pieceColor && cell.piece != '') ? 'unclickable': 'clickable'">{{cell.piece}}</td>
+    <table cellpadding="0" cellspacing="0" *ngFor="let b of board; let i = index">
+      <tr *ngFor="let cell of b; let j = index">
+        <td [ngStyle]="{background : cell.color, color:cell.pieceColor}" (click)="onClick(i,j,bn)" [ngClass]="(cell.piece != '' && colF == i && rowF == j) || (cell.piece != '' && colF == null) || (cell.piece == ''&& cell.canGo) || (whosTurn!=cell.pieceColor && (cell.piece != ''))  ? 'clickable': 'unclickable'">{{cell.piece}}</td>
       </tr>
     </table>
 
