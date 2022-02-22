@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "Dragonchess"
+    }
+  },
+  "defaultProject": "Dragonchess",
+  "cli": {
+    "analytics": "f1defcfb-f955-45eb-98b7-60461d4fc917"
+  }
 }
