@@ -337,18 +337,19 @@ export class AppComponent {
 
 
 
-      let y = 0; //turning around
-      for(let i = this.files-1; i >= 0; i--) {
-        var x = 0;
-        for(let j = this.ranks-1; j >= this.ranks/2; j--) {
+      let y = this.files-1; //turning around
+      for(let i = 0; i < this.files; i++) {
+        var x = this.ranks-1;
+        for(let j = 0; j < this.ranks/2; j++) {
           for(let b = 1; b <= 3; b++) {
             var board = this.boards[b][i][j];
             this.boards[b][i][j] = this.boards[b][y][x];
             this.boards[b][y][x] = board;
+            console.log("Původní: "+ y, x +"; Otočené: "+ i, j)
           }
-          x++;
+          x--;
         }
-        y++;
+        y--;
       }
 
       //this.sliceBack(this.bnF)
