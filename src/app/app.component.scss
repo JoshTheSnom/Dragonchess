@@ -1,13 +1,23 @@
 //#chess_board { border:1px solid #333; }
+
+.contentPane {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+    margin-bottom: 5px;
+  //width: 100%;
+
+}
+
 td {
-  border:2px solid #333;
-  background:#d2ae71;
-  height:40px;
-  font-size: 30px;
+  transition: 0.2s ease;
+  border:1px solid #333;
+  height:22px;
+  font-size: 16.5px;
   font-weight: bold;
   text-align:center;
   vertical-align:middle;
-  width:40px;
+  width:22px;
   user-select: none;
   font-family: sans-serif;
 
@@ -15,14 +25,30 @@ td {
   -webkit-text-stroke-color: black;
 }
 
+.contentPane:hover{
+  td {
+    border: 1px solid #333;
+
+    height: 33px;
+    font-size: 27.5px;
+    width: 33px;
+  }
+}
+
 /*#chess_board tr:nth-child(odd) td:nth-child(even),
 #chess_board tr:nth-child(even) td:nth-child(odd) {
   background:#009d00;
 }*/
-.contentPane {
-  display: flex;
+.higherContentPane {
+  margin: auto;
+  width: 500px;
+  position: relative;
+}
+
+.higherContentPane > * {
   justify-content: center;
   align-items: center;
+  display: flex;
 }
 .gold {
   color: gold;
@@ -30,10 +56,6 @@ td {
 
 .scarlet {
   color: darkred;
-}
-
-#chess_board1,#chess_board2 {
-  //margin: 20px;
 }
 
 .clickable {

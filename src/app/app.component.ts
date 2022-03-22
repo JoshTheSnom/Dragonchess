@@ -5,6 +5,7 @@ class Tile {
     this.piece = piece;
     this.canGo = canGo;
     this.color = color;
+    this.pieceColor = pieceColor;
   }
   piece:string;
   canGo:boolean;
@@ -51,14 +52,14 @@ export class AppComponent {
   bnS:number;
 
   onClick(col, row, bn){
-    console.log(bn, col, row);
+    console.log(col, row);
 
     if(this.rowF == null) {
       this.bnF = bn;
       //this.slicebn(this.bnF);
     }
 
-    if(this.rowF == null && this.boards[this.bnF][col][row].piece != "" && this.boards[this.bnF][col][row].pieceColor == this.whosTurn && !(this.boards[3][col][row].piece == "B" && this.bnF==2 && this.boards[this.bnF][col][row].pieceColor == this.whosTurn)) {
+    if(this.rowF == null && this.boards[this.bnF][col][row].piece != "" && this.boards[this.bnF][col][row].pieceColor == this.whosTurn && !(this.boards[3][col][row].piece == "B" && this.bnF==2 && this.boards[this.bnF][col][row].pieceColor != this.boards[3][col][row].pieceColor)) {
       this.rowF = row;
       this.colF = col;
       //console.log(row, col)
@@ -66,44 +67,10 @@ export class AppComponent {
 
       switch (this.boards[this.bnF][col][row].piece) {
         case 'U':
-          this.markTile(col+1, row+2, this.bnF);
-          this.markTile(col+2, row+1, this.bnF);
-          this.markTile(col+2, row-1, this.bnF);
-          this.markTile(col-1, row+2, this.bnF);
-          this.markTile(col-2, row+1, this.bnF);
-          this.markTile(col+1, row-2, this.bnF);
-          this.markTile(col-2, row-1, this.bnF);
-          this.markTile(col-1, row-2, this.bnF);
+          this.knightMove(col, row);
           break;
         case 'O':
-          for(let i = col+1; i < this.files; i++){
-            if(this.boards[this.bnF][i][row].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-            else {
-              this.markTile(i, row, this.bnF);
-              if(this.boards[this.bnF][i][row].piece != '') break;
-            }
-          }
-          for(let i = col-1; i >= 0; i--) {
-            if(this.boards[this.bnF][i][row].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-            else {
-              this.markTile(i, row, this.bnF);
-              if(this.boards[this.bnF][i][row].piece != '') break;
-            }
-          }
-          for(let i = row+1; i < this.ranks; i++) {
-            if(this.boards[this.bnF][col][i].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-            else {
-              this.markTile(col, i, this.bnF);
-              if(this.boards[this.bnF][col][i].piece != '') break;
-            }
-          }
-          for(let i = row-1; i >= 0; i--) {
-            if(this.boards[this.bnF][col][i].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-            else {
-              this.markTile(col, i, this.bnF);
-              if(this.boards[this.bnF][col][i].piece != '') break;
-            }
-          }
+          this.rookMove(col, row);
           break;
         case 'H':
           if(this.bnF == 2) {
@@ -132,44 +99,10 @@ export class AppComponent {
           }
           break;
         case 'T':
-          for(let i = col+1, j = row + 1; i < this.files && j < this.ranks; i++, j++){
-            if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-            else {
-              this.markTile(i, j, this.bnF);
-              if(this.boards[this.bnF][i][j].piece != '') break;
-            }
-          }
-          for(let i = col-1, j = row - 1; i >= 0 && j >= 0; i--, j--) {
-            if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-            else {
-              this.markTile(i, j, this.bnF);
-              if(this.boards[this.bnF][i][j].piece != '') break;
-            }
-          }
-          for(let i = col+1, j = row - 1; i < this.files && j >= 0; i++, j--) {
-            if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-            else {
-              this.markTile(i, j, this.bnF);
-              if(this.boards[this.bnF][i][j].piece != '') break;
-            }
-          }
-          for(let i = col-1, j = row + 1; i >= 0 && j < this.ranks; i--, j++) {
-            if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-            else {
-              this.markTile(i, j, this.bnF);
-              if(this.boards[this.bnF][i][j].piece != '') break;
-            }
-          }
+          this.bishopMove(col, row);
           break;
         case 'C':
-          this.markTile(col+1, row+1, this.bnF);
-          this.markTile(col+1, row-1, this.bnF);
-          this.markTile(col-1, row+1, this.bnF);
-          this.markTile(col-1, row-1, this.bnF);
-          this.markTile(col+1, row, this.bnF);
-          this.markTile(col, row+1, this.bnF);
-          this.markTile(col-1, row, this.bnF);
-          this.markTile(col, row-1, this.bnF);
+          this.kingMove(col, row);
           if(this.bnF == 2) {
             this.markTile(col, row, 1);
             this.markTile(col, row, 3);
@@ -178,62 +111,8 @@ export class AppComponent {
           break;
         case 'M':
           if(this.bnF == 2) {
-            for(let i = col+1, j = row + 1; i < this.files && j < this.ranks; i++, j++){
-              if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-              else {
-                this.markTile(i, j, this.bnF);
-                if(this.boards[this.bnF][i][j].piece != '') break;
-              }
-            }
-            for(let i = col-1, j = row - 1; i >= 0 && j >= 0; i--, j--) {
-              if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-              else {
-                this.markTile(i, j, this.bnF);
-                if(this.boards[this.bnF][i][j].piece != '') break;
-              }
-            }
-            for(let i = col+1, j = row - 1; i < this.files && j >= 0; i++, j--) {
-              if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-              else {
-                this.markTile(i, j, this.bnF);
-                if(this.boards[this.bnF][i][j].piece != '') break;
-              }
-            }
-            for(let i = col-1, j = row + 1; i >= 0 && j < this.ranks; i--, j++) {
-              if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-              else {
-                this.markTile(i, j, this.bnF);
-                if(this.boards[this.bnF][i][j].piece != '') break;
-              }
-            }
-            for(let i = col+1; i < this.files; i++){
-              if(this.boards[this.bnF][i][row].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-              else {
-                this.markTile(i, row, this.bnF);
-                if(this.boards[this.bnF][i][row].piece != '') break;
-              }
-            }
-            for(let i = col-1; i >= 0; i--) {
-              if(this.boards[this.bnF][i][row].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-              else {
-                this.markTile(i, row, this.bnF);
-                if(this.boards[this.bnF][i][row].piece != '') break;
-              }
-            }
-            for(let i = row+1; i < this.ranks; i++) {
-              if(this.boards[this.bnF][col][i].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-              else {
-                this.markTile(col, i, this.bnF);
-                if(this.boards[this.bnF][col][i].piece != '') break;
-              }
-            }
-            for(let i = row-1; i >= 0; i--) {
-              if(this.boards[this.bnF][col][i].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-              else {
-                this.markTile(col, i, this.bnF);
-                if(this.boards[this.bnF][col][i].piece != '') break;
-              }
-            }
+            this.rookMove(col, row);
+            this.bishopMove(col, row);
             this.markTile(col, row, 1);
             this.markTile(col, row, 3);
           }
@@ -253,37 +132,16 @@ export class AppComponent {
           break;
         case 'K':
           if(this.bnF==2) {
-            this.markTile(col + 1, row + 1, this.bnF);
-            this.markTile(col + 1, row - 1, this.bnF);
-            this.markTile(col - 1, row + 1, this.bnF);
-            this.markTile(col - 1, row - 1, this.bnF);
-            this.markTile(col + 1, row, this.bnF);
-            this.markTile(col, row + 1, this.bnF);
-            this.markTile(col - 1, row, this.bnF);
-            this.markTile(col, row - 1, this.bnF);
+            this.kingMove(col, row);
             this.markTile(col, row, 1);
             this.markTile(col, row, 3);
           }
           else this.markTileMove(col, row, 2);
           break;
         case 'P':
+          this.kingMove(col, row);
           if(this.bnF==2) {
-            this.markTile(col + 1, row + 1, this.bnF);
-            this.markTile(col + 1, row - 1, this.bnF);
-            this.markTile(col - 1, row + 1, this.bnF);
-            this.markTile(col - 1, row - 1, this.bnF);
-            this.markTile(col + 1, row, this.bnF);
-            this.markTile(col, row + 1, this.bnF);
-            this.markTile(col - 1, row, this.bnF);
-            this.markTile(col, row - 1, this.bnF);
-            this.markTile(col+1, row+2, this.bnF);
-            this.markTile(col+2, row+1, this.bnF);
-            this.markTile(col+2, row-1, this.bnF);
-            this.markTile(col-1, row+2, this.bnF);
-            this.markTile(col-2, row+1, this.bnF);
-            this.markTile(col+1, row-2, this.bnF);
-            this.markTile(col-2, row-1, this.bnF);
-            this.markTile(col-1, row-2, this.bnF);
+            this.knightMove(col, row);
 
             this.markTile(col+2, row, 1);
             this.markTile(col, row+2, 1);
@@ -295,14 +153,6 @@ export class AppComponent {
             this.markTile(col, row-2, 3);
           }
           else {
-            this.markTile(col + 1, row + 1, this.bnF);
-            this.markTile(col + 1, row - 1, this.bnF);
-            this.markTile(col - 1, row + 1, this.bnF);
-            this.markTile(col - 1, row - 1, this.bnF);
-            this.markTile(col + 1, row, this.bnF);
-            this.markTile(col, row + 1, this.bnF);
-            this.markTile(col - 1, row, this.bnF);
-            this.markTile(col, row - 1, this.bnF);
             this.markTile(col+2, row, 2);
             this.markTile(col, row+2, 2);
             this.markTile(col-2, row, 2);
@@ -324,8 +174,8 @@ export class AppComponent {
           break;
         case 'W':
           this.markTileMove(col, row-1, this.bnF);
-          if(this.boards[this.bnF][col+1][row-1].piece!='')this.markTile(col+1, row-1, this.bnF);
-          if(this.boards[this.bnF][col-1][row-1].piece!='')this.markTile(col-1, row-1, this.bnF);
+          this.markTileTake(col+1, row-1, this.bnF);
+          this.markTileTake(col-1, row-1, this.bnF);
           break;
         case 'S':
           if(this.bnF==1) {
@@ -336,12 +186,16 @@ export class AppComponent {
           }
           else {
             if (this.boards[1][col][row].piece == '') this.markTile(col, row, 1);
-            this.markTileMove(0, 6, 1);
-            this.markTileMove(2, 6, 1);
-            this.markTileMove(4, 6, 1);
-            this.markTileMove(6, 6, 1);
-            this.markTileMove(8, 6, 1);
-            this.markTileMove(10, 6, 1);
+            let colMod;
+            if(this.whosTurn == "gold") colMod = 0;
+            else colMod = 1;
+              this.markTileMove(0+colMod, 6, 1);
+              this.markTileMove(2+colMod, 6, 1);
+              this.markTileMove(4+colMod, 6, 1);
+              this.markTileMove(6+colMod, 6, 1);
+              this.markTileMove(8+colMod, 6, 1);
+              this.markTileMove(10+colMod, 6, 1);
+
           }
           break;
         case 'G':
@@ -372,42 +226,8 @@ export class AppComponent {
 
           break;
         case 'R':
-          for(let i = col+1, j = row+1; i < this.files && j < this.ranks; i++, j++){
-            if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-            else {
-              this.markTile(i, j, this.bnF);
-              if(this.boards[this.bnF][i][j].piece != '') break;
-            }
-          }
-          for(let i = col-1, j = row-1; i >= 0 && j >= 0; i--, j--) {
-            if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-            else {
-              this.markTile(i, j, this.bnF);
-              if(this.boards[this.bnF][i][j].piece != '') break;
-            }
-          }
-          for(let i = col+1, j = row-1; i < this.files && j >= 0; i++, j--) {
-            if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-            else {
-              this.markTile(i, j, this.bnF);
-              if(this.boards[this.bnF][i][j].piece != '') break;
-            }
-          }
-          for(let i = col-1, j = row+1; i >= 0 && j < this.ranks; i--, j++) {
-            if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
-            else {
-              this.markTile(i, j, this.bnF);
-              if(this.boards[this.bnF][i][j].piece != '') break;
-            }
-          }
-          this.markTile(col + 1, row + 1, this.bnF);
-          this.markTile(col + 1, row - 1, this.bnF);
-          this.markTile(col - 1, row + 1, this.bnF);
-          this.markTile(col - 1, row - 1, this.bnF);
-          this.markTile(col + 1, row, this.bnF);
-          this.markTile(col, row + 1, this.bnF);
-          this.markTile(col - 1, row, this.bnF);
-          this.markTile(col, row - 1, this.bnF);
+          this.bishopMove(col, row);
+          this.kingMove(col, row);
 
           this.markTile(col + 1, row, 2);
           this.markTile(col, row + 1, 2);
@@ -452,9 +272,9 @@ export class AppComponent {
           this.markTileMove(col, row-1, this.bnF);
           this.markTileMove(col+1, row, this.bnF);
           this.markTileMove(col-1, row, this.bnF);
-          if(this.boards[this.bnF][col+1][row-1].piece!='')this.markTile(col+1, row-1, this.bnF);
-          if(this.boards[this.bnF][col-1][row-1].piece!='')this.markTile(col-1, row-1, this.bnF);
-          if(this.bnF==3)  if(this.boards[2][col][row].piece!='')this.markTile(col, row, 2);
+          this.markTileTake(col+1, row-1, this.bnF);
+          this.markTileTake(col-1, row-1, this.bnF);
+          if(this.bnF==3) this.markTileTake(col, row, 2);
           else this.markTileMove(col, row, 3);
           break;
       }
@@ -492,7 +312,6 @@ export class AppComponent {
         this.boards[2][col][row].piece = '';
       }
       else {
-        console.log("movin piece");
         this.boards[bn][col][row].piece = this.boards[this.bnF][this.colF][this.rowF].piece;
         this.boards[bn][col][row].pieceColor = this.boards[this.bnF][this.colF][this.rowF].pieceColor;
         this.boards[this.bnF][this.colF][this.rowF].piece = "";
@@ -561,7 +380,6 @@ export class AppComponent {
       this.boards[bn][col][row].canGo = true;
       this.darkenColor(col, row, bn);
     }
-    //this.sliceBack(this.bnF)
   }
 
   markTileMove(col, row, bn) {
@@ -571,26 +389,21 @@ export class AppComponent {
     }
   }
 
+  markTileTake(col, row, bn) {
+    if(col>=0 && row >= 0 && col < this.files && row < this.ranks && this.boards[bn][col][row].pieceColor != this.boards[this.bnF][this.colF][this.rowF].pieceColor && this.boards[bn][col][row].piece != "") {
+      this.boards[bn][col][row].canGo = true;
+      this.darkenColor(col, row, bn);
+    }
+  }
+
   darkenColor(col, row, bn) {
     if (this.boards[bn][col][row].color == "#d2ae71") this.boards[bn][col][row].color = "#ab8036";
-    else if (this.boards[bn][col][row].color == "#009d00") this.boards[bn][col][row].color = "#006d00";
+    else if(this.boards[bn][col][row].color == "#009d00") this.boards[bn][col][row].color = "#006d00";
     else if(this.boards[bn][col][row].color == "#db2213")this.boards[bn][col][row].color = "#99170d";
     else if(this.boards[bn][col][row].color == "#8e4700")this.boards[bn][col][row].color = "#633100";
     else if(this.boards[bn][col][row].color == "#d6d6d6")this.boards[bn][col][row].color = "#959595";
     else if(this.boards[bn][col][row].color == "#62b1ff")this.boards[bn][col][row].color = "#007cf7";
   }
-
-  /*slicebn(bn) {
-    if(bn == 1) this.boards[this.bnF] = this.board1.slice(0);
-    else if (bn == 2) this.boards[this.bnF] = this.board2.slice(0);
-    else this.boards[this.bnF] = this.board3.slice(0);
-  }
-
-  sliceBack(bn) {
-    if(bn == 1) this.board1 = this.boards[this.bnF].slice(0);
-    else if (bn == 2) this.board2 = this.boards[this.bnF].slice(0);
-    else this.board3 = this.boards[this.bnF].slice(0);
-  }*/
 
   setBoards() {
     this.boards = [];
@@ -693,5 +506,89 @@ export class AppComponent {
         if(this.boards[b][i][7].piece != '') this.boards[b][i][7].pieceColor = "gold";
       }
     }
+  }
+
+  rookMove(col, row) {
+    for(let i = col+1; i < this.files; i++){
+      if(this.boards[this.bnF][i][row].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
+      else {
+        this.markTile(i, row, this.bnF);
+        if(this.boards[this.bnF][i][row].piece != '') break;
+      }
+    }
+    for(let i = col-1; i >= 0; i--) {
+      if(this.boards[this.bnF][i][row].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
+      else {
+        this.markTile(i, row, this.bnF);
+        if(this.boards[this.bnF][i][row].piece != '') break;
+      }
+    }
+    for(let i = row+1; i < this.ranks; i++) {
+      if(this.boards[this.bnF][col][i].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
+      else {
+        this.markTile(col, i, this.bnF);
+        if(this.boards[this.bnF][col][i].piece != '') break;
+      }
+    }
+    for(let i = row-1; i >= 0; i--) {
+      if(this.boards[this.bnF][col][i].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
+      else {
+        this.markTile(col, i, this.bnF);
+        if(this.boards[this.bnF][col][i].piece != '') break;
+      }
+    }
+  }
+
+  bishopMove(col, row) {
+    for(let i = col+1, j = row + 1; i < this.files && j < this.ranks; i++, j++){
+      if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
+      else {
+        this.markTile(i, j, this.bnF);
+        if(this.boards[this.bnF][i][j].piece != '') break;
+      }
+    }
+    for(let i = col-1, j = row - 1; i >= 0 && j >= 0; i--, j--) {
+      if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
+      else {
+        this.markTile(i, j, this.bnF);
+        if(this.boards[this.bnF][i][j].piece != '') break;
+      }
+    }
+    for(let i = col+1, j = row - 1; i < this.files && j >= 0; i++, j--) {
+      if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
+      else {
+        this.markTile(i, j, this.bnF);
+        if(this.boards[this.bnF][i][j].piece != '') break;
+      }
+    }
+    for(let i = col-1, j = row + 1; i >= 0 && j < this.ranks; i--, j++) {
+      if(this.boards[this.bnF][i][j].pieceColor == this.boards[this.bnF][col][row].pieceColor) break;
+      else {
+        this.markTile(i, j, this.bnF);
+        if(this.boards[this.bnF][i][j].piece != '') break;
+      }
+    }
+  }
+
+  knightMove(col, row) {
+    this.markTile(col+1, row+2, this.bnF);
+    this.markTile(col+2, row+1, this.bnF);
+    this.markTile(col+2, row-1, this.bnF);
+    this.markTile(col-1, row+2, this.bnF);
+    this.markTile(col-2, row+1, this.bnF);
+    this.markTile(col+1, row-2, this.bnF);
+    this.markTile(col-2, row-1, this.bnF);
+    this.markTile(col-1, row-2, this.bnF);
+  }
+
+  kingMove(col, row) {
+    this.markTile(col+1, row+1, this.bnF);
+    this.markTile(col+1, row-1, this.bnF);
+    this.markTile(col-1, row+1, this.bnF);
+    this.markTile(col-1, row-1, this.bnF);
+    this.markTile(col+1, row, this.bnF);
+    this.markTile(col, row+1, this.bnF);
+    this.markTile(col-1, row, this.bnF);
+    this.markTile(col, row-1, this.bnF);
   }
 }
