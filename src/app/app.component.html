@@ -1,12 +1,12 @@
 <html>
 <body>
-Dragonchess
 <div class="higherContentPane">
+  <h3>Dragonchess</h3>
   <div class="contentPane" *ngFor="let board of boards; let bn = index">
     <!--div id="chess_board1"-->
     <table cellpadding="0" cellspacing="0" *ngFor="let b of board; let i = index">
       <tr *ngFor="let cell of b; let j = index">
-        <td [ngStyle]="{background : cell.color, color:cell.pieceColor}" (click)="onClick(i,j,bn)" [ngClass]="(cell.piece != '') || (cell.piece != '' && colF == null) || (cell.piece == ''&& cell.canGo) || (whosTurn!=cell.pieceColor && (cell.piece != ''))  ? 'clickable': 'unclickable'">{{cell.piece}}</td>
+        <td [ngStyle]="{background : cell.color, color:cell.pieceColor}" (click)="onClick(i,j,bn)" [ngClass]="(cell.canGo || (cell.piece != '' && colF == null && cell.pieceColor == whosTurn) || (i == colF && j == rowF && bn == bnF))  ? 'clickable': 'unclickable'">{{cell.piece}}</td>
       </tr>
     </table>
 

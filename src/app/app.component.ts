@@ -27,8 +27,7 @@ export class AppComponent {
 
   whosTurn = "gold";
 
-  turns: String[];
-  turnsindex = 0;
+  turns: String[] = [];
 
   boards: Tile[][][];
 
@@ -38,11 +37,7 @@ export class AppComponent {
   //boards[this.bnF]: Tile[][];
 
   constructor(){
-    this.board1 = [];
-    this.board2 = [];
-    this.board3 = [];
     // @ts-ignore
-
     this.setBoards();
 
   }
@@ -65,7 +60,7 @@ export class AppComponent {
       //console.log(row, col)
       this.darkenColor(col, row, this.bnF)
 
-      switch (this.boards[this.bnF][col][row].piece) {
+      switch (this.boards[bn][col][row].piece) {
         case 'U':
           this.knightMove(col, row);
           break;
@@ -113,6 +108,7 @@ export class AppComponent {
           if(this.bnF == 2) {
             this.rookMove(col, row);
             this.bishopMove(col, row);
+
             this.markTile(col, row, 1);
             this.markTile(col, row, 3);
           }
@@ -229,11 +225,11 @@ export class AppComponent {
           this.bishopMove(col, row);
           this.kingMove(col, row);
 
-          this.markTile(col + 1, row, 2);
-          this.markTile(col, row + 1, 2);
-          this.markTile(col - 1, row, 2);
-          this.markTile(col, row - 1, 2);
-          this.markTile(col, row, 2);
+          this.markTileBurn(col + 1, row, 2);
+          this.markTileBurn(col, row + 1, 2);
+          this.markTileBurn(col - 1, row, 2);
+          this.markTileBurn(col, row - 1, 2);
+          this.markTileBurn(col, row, 2);
 
           break;
         case 'B':
@@ -256,12 +252,12 @@ export class AppComponent {
             this.markTile(col, row + 2, this.bnF);
             this.markTile(col - 2, row, this.bnF);
             this.markTile(col, row - 2, this.bnF);
-            this.markTile(col + 1, row, 2);
-            this.markTile(col, row + 1, 2);
-            this.markTile(col - 1, row, 2);
-            this.markTile(col, row - 1, 2);
+            if(this.boards[3][col+1][row].piece=='') this.markTile(col + 1, row, 2);
+            if(this.boards[3][col][row+1].piece=='') this.markTile(col, row + 1, 2);
+            if(this.boards[3][col-1][row].piece=='') this.markTile(col - 1, row, 2);
+            if(this.boards[3][col][row-1].piece=='') this.markTile(col, row - 1, 2);
           }
-          else {
+          else if(this.boards[3][col][row].piece==''){
             this.markTile(col + 1, row, 3);
             this.markTile(col, row + 1, 3);
             this.markTile(col - 1, row, 3);
@@ -284,51 +280,51 @@ export class AppComponent {
       this.clearBoardSelect();
 
     }
-    else if (this.rowF != null && this.boards[bn][col][row].canGo){
+    else if (this.boards[bn][col][row].canGo){
 
       let turn: string = "";
-      //TODO: check if multiple pieces of the same kind can move there
-      turn += this.boards[this.bnF][this.colF][this.rowF].piece;
-      if(this.boards[this.bnF][col][row].piece != '') turn += 'x';
-      turn += '2' //for now only 2, change later
+
+      turn += this.boards[this.bnF][this.colF][this.rowF].piece; //W
+      turn += this.bnF; //W2
       if(this.whosTurn=="gold"){
-        turn += String.fromCharCode(col+97);
-        turn += (8-row).toString();
+        turn += String.fromCharCode(this.colF+97); //W2f
+        turn += (this.ranks-row).toString(); //W2f2
+      }
+      else {
+        turn += String.fromCharCode(108-this.colF);
+        turn += (row+1).toString();
+      }
+
+      if(this.boards[this.bnF][col][row].piece != '') turn += 'x';
+      else turn += '-'; //W2f3-
+
+      turn += bn; //W2f3-2
+
+      if(this.whosTurn=="gold"){
+        turn += String.fromCharCode(col+97); //W2f3-2f
+        turn += (this.ranks-row).toString(); //W2f3-2f3
       }
       else {
         turn += String.fromCharCode(108-col);
         turn += (row+1).toString();
       }
       console.log(turn);
+      this.turns.push(turn);
 
 
-      if(this.boards[this.bnF][this.colF][this.rowF].piece == 'W' && row==0){//promote W to H
+      if(this.boards[this.bnF][this.colF][this.rowF].piece == 'W' && (row==0 || row == 7)){//promote W to H
         this.boards[this.bnF][col][row].piece = 'H';
         this.boards[this.bnF][col][row].pieceColor = this.boards[this.bnF][this.colF][this.rowF].pieceColor;
         this.boards[this.bnF][this.colF][this.rowF].piece = "";
         this.boards[this.bnF][this.colF][this.rowF].pieceColor = "white";
       }
       else if(this.boards[this.bnF][this.colF][this.rowF].piece == 'R' && bn == 2) {
-        this.boards[2][col][row].piece = '';
+        this.boards[bn][col][row].piece = '';
       }
       else {
         this.boards[bn][col][row].piece = this.boards[this.bnF][this.colF][this.rowF].piece;
         this.boards[bn][col][row].pieceColor = this.boards[this.bnF][this.colF][this.rowF].pieceColor;
         this.boards[this.bnF][this.colF][this.rowF].piece = "";
-        this.boards[this.bnF][this.colF][this.rowF].pieceColor = "white";
-        /*this.sliceBack(this.bnF);
-        let dboards[this.bnF] = this.boards[this.bnF].slice(0);
-        this.slicebn(bn);
-        this.boards[this.bnF][col][row].piece = dboards[this.bnF][this.colF][this.rowF].piece;
-        this.boards[this.bnF][col][row].pieceColor = dboards[this.bnF][this.colF][this.rowF].pieceColor;
-        dboards[this.bnF][this.colF][this.rowF].piece = "";
-        dboards[this.bnF][this.colF][this.rowF].pieceColor = "white";
-        console.log(this.boards[this.bnF][col][row].piece);
-        console.log(dboards[this.bnF][col][row].piece);
-        this.boards[this.bnF] = dboards[this.bnF].slice(0);
-        this.clearBoardSelect();
-        this.sliceBack(bn);
-        this.slicebn(this.bnF);*/
       }
       this.clearBoardSelect();
       if(this.whosTurn=="gold") this.whosTurn = "darkred";
@@ -337,19 +333,15 @@ export class AppComponent {
 
 
 
-      let y = this.files-1; //turning around
-      for(let i = 0; i < this.files; i++) {
-        var x = this.ranks-1;
-        for(let j = 0; j < this.ranks/2; j++) {
-          for(let b = 1; b <= 3; b++) {
+      //flipping the board
+      for(let b = 1; b <= 3; b++) {
+        for(let i = 0, y = this.files-1; i < this.files; i++, y--) {
+          for(let j = 0, x = this.ranks-1; j < this.ranks/2; j++, x--) {
             var board = this.boards[b][i][j];
             this.boards[b][i][j] = this.boards[b][y][x];
             this.boards[b][y][x] = board;
-            console.log("Původní: "+ y, x +"; Otočené: "+ i, j)
           }
-          x--;
         }
-        y--;
       }
 
       //this.sliceBack(this.bnF)
@@ -361,8 +353,10 @@ export class AppComponent {
     for(let i = 0; i < this.files; i++) {
       for (let j = 0; j < this.ranks; j++) {
         for(let b = 1; b <= 3; b++) {
-          if (this.boards[b][i][j].color == "#ab8036") this.boards[b][i][j].color = "#d2ae71";
-          else if (this.boards[b][i][j].color == "#006d00") this.boards[b][i][j].color = "#009d00";
+          if(this.boards[2][i][j].color == "#db2213") this.boards[2][i][j].color = "#d2ae71";
+          else if(this.boards[2][i][j].color == "#99170d") this.boards[2][i][j].color = "#009d00";
+          if (this.boards[b][i][j].color == "#ab8036") this.boards[2][i][j].color = "#d2ae71";
+          else if (this.boards[b][i][j].color == "#006d00") this.boards[2][i][j].color = "#009d00";
           else if (this.boards[b][i][j].color == "#99170d") this.boards[b][i][j].color = "#db2213";
           else if (this.boards[b][i][j].color == "#633100") this.boards[b][i][j].color = "#8e4700";
           else if (this.boards[b][i][j].color == "#959595") this.boards[b][i][j].color = "#d6d6d6";
@@ -380,6 +374,13 @@ export class AppComponent {
     if(col>=0 && row >= 0 && col < this.files && row < this.ranks && this.boards[bn][col][row].pieceColor != this.boards[this.bnF][this.colF][this.rowF].pieceColor) {
       this.boards[bn][col][row].canGo = true;
       this.darkenColor(col, row, bn);
+    }
+  }
+
+  markTileBurn(col, row, bn) {
+    if(col>=0 && row >= 0 && col < this.files && row < this.ranks && this.boards[bn][col][row].pieceColor != this.boards[this.bnF][this.colF][this.rowF].pieceColor) {
+      this.boards[bn][col][row].canGo = true;
+      this.burnColor(col, row, bn);
     }
   }
 
@@ -406,25 +407,31 @@ export class AppComponent {
     else if(this.boards[bn][col][row].color == "#62b1ff")this.boards[bn][col][row].color = "#007cf7";
   }
 
+  burnColor(col, row, bn) {
+    if (this.boards[bn][col][row].color == "#d2ae71") this.boards[bn][col][row].color = "#db2213";
+    else if(this.boards[bn][col][row].color == "#009d00") this.boards[bn][col][row].color = "#99170d";
+  }
+
   setBoards() {
     this.boards = [];
-    this.boards[3] = [];
-    this.boards[2] = [];
     this.boards[1] = [];
+    this.boards[2] = [];
+    this.boards[3] = [];
     for (let y = 0; y < this.files; y++) {
-      this.boards[3][y] = [];
-      this.boards[2][y] = [];
       this.boards[1][y] = [];
-      for (let x = 0; x < this.ranks; x++) { //initializing boards;
+      this.boards[2][y] = [];
+      this.boards[3][y] = [];
+      for (let x = 0; x < this.ranks; x++) { //incializace šachovnic;
         //console.log(y + " " + x);
-        if((x+y)%2 == 0)this.boards[3][y][x] = new Tile("",false, "#db2213", "white"); //underground board
-        else this.boards[3][y][x] = new Tile("",false, "#8e4700", "white");
-        if((x+y)%2 == 0)this.boards[2][y][x] = new Tile("",false, "#d2ae71", "white"); //earth board
-        else this.boards[2][y][x] = new Tile("",false, "#009d00", "white");
-        if((x+y)%2 == 0)this.boards[1][y][x] = new Tile("",false, "#d6d6d6", "white"); //sky board
+        if((x+y)%2 == 0)this.boards[1][y][x] = new Tile("",false, "#d6d6d6", "white"); //nebe
         else this.boards[1][y][x] = new Tile("",false, "#62b1ff", "white");
+        if((x+y)%2 == 0)this.boards[2][y][x] = new Tile("",false, "#d2ae71", "white"); //země
+        else this.boards[2][y][x] = new Tile("",false, "#009d00", "white");
+        if((x+y)%2 == 0)this.boards[3][y][x] = new Tile("",false, "#db2213", "white"); //peklo
+        else this.boards[3][y][x] = new Tile("",false, "#8e4700", "white");
       }
     }
+
     for (let i = 0; i < this.files; i++) {
       this.boards[2][i][1].piece = "W"
       this.boards[2][i][6].piece = "W"
